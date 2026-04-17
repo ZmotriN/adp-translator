@@ -1,6 +1,6 @@
 /*!
 
-    Généré: Jeudi le 16 avril 2026 à 22 h 33
+    Généré: Jeudi le 16 avril 2026 à 22 h 40
     Auteur: Maxime Larrivée-Roy <mlarriveeroy@gmail.com>
     Github: https://github.com/ZmotriN/adp-visualiser
 
