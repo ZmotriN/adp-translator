@@ -61,60 +61,60 @@ export default class AngineTranslator {
 		// 🔊 VOCABULARY CORE
 		// -------------------------
 		const syllables = [
-			"qa","qe","qi","qo","qu",
-			"Qa","Qe","Qi","Qo","Qu",
+			"qa", "qe", "qi", "qo", "qu",
+			"Qa", "Qe", "Qi", "Qo", "Qu",
 
-			"ka","ke","ki","ko","ku",
-			"ga","ge","gi","go","gu",
+			"ka", "ke", "ki", "ko", "ku",
+			"ga", "ge", "gi", "go", "gu",
 
-			"ta","te","ti","to","tu",
-			"da","de","di","do","du",
+			"ta", "te", "ti", "to", "tu",
+			"da", "de", "di", "do", "du",
 
-			"pa","pe","pi","po","pu",
-			"ba","be","bi","bo","bu",
+			"pa", "pe", "pi", "po", "pu",
+			"ba", "be", "bi", "bo", "bu",
 
-			"kra","kro","kru","kri",
-			"qra","qro","qru","qri",
+			"kra", "kro", "kru", "kri",
+			"qra", "qro", "qru", "qri",
 
-			"tra","tro","tru","tri",
-			"dra","dro","dru","dri",
+			"tra", "tro", "tru", "tri",
+			"dra", "dro", "dru", "dri",
 
-			"pra","pro","pru","pri",
-			"bra","bro","bru","bri",
+			"pra", "pro", "pru", "pri",
+			"bra", "bro", "bru", "bri",
 
-			"kla","klo","klu",
-			"gla","glo","glu",
+			"kla", "klo", "klu",
+			"gla", "glo", "glu",
 
-			"ska","sko","sku",
-			"zra","zro","zru",
+			"ska", "sko", "sku",
+			"zra", "zro", "zru",
 
-			"qla","qlo","qlu",
-			"tqa","tqo","tqu",
+			"qla", "qlo", "qlu",
+			"tqa", "tqo", "tqu",
 
-			"ak","ek","ik","ok","uk",
-			"aq","eq","iq","oq","uq"
+			"ak", "ek", "ik", "ok", "uk",
+			"aq", "eq", "iq", "oq", "uq"
 		];
 
 		const rolls = [
-			"brrr","prrr","krrr","trrr","grrr","qrrr",
-			"zzzz","ssss","rrrr",
-			"krkr","trtr","prpr","qrqr",
-			"bzbz","zgzg",
-			"rrak","rruk","rrik"
+			"brrr", "prrr", "krrr", "trrr", "grrr", "qrrr",
+			"zzzz", "ssss", "rrrr",
+			"krkr", "trtr", "prpr", "qrqr",
+			"bzbz", "zgzg",
+			"rrak", "rruk", "rrik"
 		];
 
 		const stops = [
-			"kt","tk","pt","kp","pk",
-			"qk","kq","tq","qt",
+			"kt", "tk", "pt", "kp", "pk",
+			"qk", "kq", "tq", "qt",
 
-			"k","t","p","q",
-			"kk","tt","pp","qq",
+			"k", "t", "p", "q",
+			"kk", "tt", "pp", "qq",
 
-			"rk","rt","rp",
-			"sk","st","sp",
+			"rk", "rt", "rp",
+			"sk", "st", "sp",
 
-			"q'","k'","t'",
-			"'","''"
+			"q'", "k'", "t'",
+			"'", "''"
 		];
 
 		// -------------------------
