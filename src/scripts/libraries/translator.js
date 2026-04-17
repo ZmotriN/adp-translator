@@ -1,3 +1,5 @@
+import { doubleMetaphone } from "double-metaphone";
+
 export default class AngineTranslator {
 
 	// -------------------------
@@ -7,7 +9,7 @@ export default class AngineTranslator {
 		return function () {
 			let t = seed += 0x6D2B79F5;
 			t = Math.imul(t ^ (t >>> 15), t | 1);
-			t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+			t = Math.imul(t ^ (t >>> 7), t | 61);
 			return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
 		};
 	}
@@ -22,8 +24,10 @@ export default class AngineTranslator {
 	}
 
 	// -------------------------
-	// 🧼 utils
+	// 🧠 CORE STATE
 	// -------------------------
+	#lexicon = new Map();
+
 	#sanitize(input) {
 		return input.normalize("NFKC").trim();
 	}
@@ -32,11 +36,9 @@ export default class AngineTranslator {
 		return str.replace(/(^\s*\p{L})|([.!?]\s*\p{L})/gu, m => m.toUpperCase());
 	}
 
-	// 🔥 mutation klingon
 	#mutate(s, r) {
-		if (r() < 0.25) s = s.toUpperCase();
-		if (r() < 0.2) s += "'";
-		if (r() < 0.1) s = s.replace(/[aeiou]/g, "");
+		if (r() < 0.06) s = s.toUpperCase();
+		if (r() < 0.04) s += "'";
 		return s;
 	}
 
@@ -53,15 +55,10 @@ export default class AngineTranslator {
 
 		const seed = this.#simpleHash(input);
 		const rand = this.#mulberry32(seed);
-
 		const r = () => rand();
-		const pick = arr => arr[Math.floor(r() * arr.length)];
-
-		const intensity =
-			((input.length % 100) / 100) * 0.7 + r() * 0.3;
 
 		// -------------------------
-		// 🔊 PHONEMES BOOSTÉS
+		// 🔊 VOCABULARY CORE
 		// -------------------------
 		const syllables = [
 			"qa","qe","qi","qo","qu",
@@ -121,7 +118,7 @@ export default class AngineTranslator {
 		];
 
 		// -------------------------
-		// 🔥 PULSE ENGINE
+		// 🔊 PULSES
 		// -------------------------
 		let pulses = [];
 		let t = 0;
@@ -138,47 +135,66 @@ export default class AngineTranslator {
 		};
 
 		// -------------------------
-		// 🧠 WORD ENGINE V2
+		// 🧠 WORD ENGINE (PHONETIC STABLE)
 		// -------------------------
 		const makeWord = (word) => {
 
-			const baseLen = Math.max(1, Math.min(4, Math.ceil(word.length / 2)));
+			const clean = word.toLowerCase();
+
+			// 🧠 double metaphone (browser-safe lib)
+			const phon = (doubleMetaphone(clean)[0] || clean).toLowerCase();
+
+			// 🔒 stable lexicon
+			if (this.#lexicon.has(phon)) {
+				return this.#lexicon.get(phon);
+			}
+
+			const wordSeed = this.#simpleHash(phon);
+			const randLocal = this.#mulberry32(wordSeed);
+			const r2 = () => randLocal();
+
+			const pickLocal = (arr) =>
+				arr[Math.floor(r2() * arr.length)];
+
+			// 📏 structure stable
+			const len = Math.max(1, Math.min(3, Math.ceil(clean.length / 3)));
 
 			let parts = [];
 
-			for (let i = 0; i < baseLen; i++) {
+			for (let i = 0; i < len; i++) {
 
 				let chunk;
 
-				// mix syllable / roll
-				if (r() < 0.25 * intensity) {
-					chunk = pick(rolls);
-					pushPulse(chunk, "roll", 1.0, 0.18);
+				if (r2() < 0.18) {
+					chunk = pickLocal(rolls);
+					pushPulse(chunk, "roll", 0.9, 0.15);
 				} else {
-					chunk = pick(syllables);
+					chunk = pickLocal(syllables);
 					pushPulse(chunk, "syllable", 0.7, 0.12);
 				}
 
-				chunk = this.#mutate(chunk, r);
-
+				chunk = this.#mutate(chunk, r2);
 				parts.push(chunk);
 
-				// insertion de stop interne
-				if (r() < intensity * 0.4) {
-					const stop = pick(stops);
+				if (r2() < 0.14) {
+					const stop = pickLocal(stops);
 					parts.push(stop);
-					pushPulse(stop, "stop", 1.0, 0.07);
+					pushPulse(stop, "stop", 0.9, 0.06);
 				}
 			}
 
-			// duplication sauvage
-			if (r() < intensity * 0.25) {
+			// 🔁 natural repetition effect
+			if (r2() < 0.15) {
 				const last = parts[parts.length - 1];
 				parts.push(last);
 				pushPulse(last, "repeat", 0.6, 0.1);
 			}
 
-			return parts.join("");
+			const result = parts.join("");
+
+			this.#lexicon.set(phon, result);
+
+			return result;
 		};
 
 		// -------------------------
@@ -193,7 +209,7 @@ export default class AngineTranslator {
 				return makeWord(token);
 			}
 
-			// spacing = respiration
+			// punctuation timing
 			if (token === ",") t += 0.15;
 			else if (token === ".") t += 0.3;
 			else if (token === "?") t += 0.35;
@@ -203,10 +219,8 @@ export default class AngineTranslator {
 			return token;
 		});
 
-		const text = output.join(" ");
-
 		return {
-			text: this.#capitalizeSentences(text),
+			text: this.#capitalizeSentences(output.join(" ")),
 			pulses
 		};
 	}

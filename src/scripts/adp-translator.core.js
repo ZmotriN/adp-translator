@@ -20,30 +20,12 @@ import AngineSpeaker from "./libraries/speaker";
 		this.translator = new AngineTranslator;
 		
 		this.speaker = new AngineSpeaker((data) => {
-			// console.log(data);
 			document.documentElement.style.setProperty('--volume', data.volume / 255 * 0.75);
 			document.documentElement.style.setProperty('--bass', data.bass / 255 * 0.75);
 			document.documentElement.style.setProperty('--treble', data.treble / 255 * 1.5);
 		});
 
-
 		await documentReady(() => this.initUI());
-
-
-// 		const text = `Sophie Durocher est une tarte.`;
-
-		
-
-// 		const mySynth = new AngineSpeaker((data) => {
-// 			// console.log(data);
-// 			document.documentElement.style.setProperty('--volume', data.volume / 255 * 0.75);
-// 			document.documentElement.style.setProperty('--bass', data.bass / 255 * 0.75);
-// 			document.documentElement.style.setProperty('--treble', data.treble / 255 * 1.5);
-// 		});
-// await documentReady();
-// 		console.log(adpt.generate(text));
-// 		await mySynth.speak(adpt.generate(text));
-
 	},
 
 
@@ -71,10 +53,3 @@ import AngineSpeaker from "./libraries/speaker";
 
 
 }).init();
-
-
-// (async () => {
-
-
-
-// })();
