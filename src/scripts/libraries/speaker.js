@@ -55,6 +55,7 @@ export default class AngineSpeaker {
 
 	#initVoice() {
 		try {
+			// configData.data_location = "/mespeak-data/";
 			meSpeak.loadConfig(configData);
 			meSpeak.loadVoice(frVoice);
 			// meSpeak.config.dict = "";
