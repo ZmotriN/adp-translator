@@ -57,6 +57,7 @@ export default class AngineSpeaker {
 		try {
 			meSpeak.loadConfig(configData);
 			meSpeak.loadVoice(frVoice);
+			// meSpeak.config.dict = "";
 		} catch (e) {
 			console.warn("meSpeak init warning (ignored):", e);
 		}
@@ -66,7 +67,7 @@ export default class AngineSpeaker {
 		// -------------------------
 		// 🔥 DISTORTION
 		// -------------------------
-		this.#disto.curve = this.#makeDistortionCurve(200);
+		this.#disto.curve = this.#makeDistortionCurve(100);
 
 		// -------------------------
 		// 🌊 FLANGER
@@ -82,14 +83,14 @@ export default class AngineSpeaker {
 		// 🌪 PHASER (optionnel mais nice)
 		// -------------------------
 		this.#phaser.type = "allpass";
-		this.#phaser.frequency.value = 700;
+		this.#phaser.frequency.value = 1200;
 		this.#phaser.Q.value = 8;
 
 		// -------------------------
 		// 🎚 LFO (flanger)
 		// -------------------------
 		this.#lfo.type = "sine";
-		this.#lfo.frequency.value = 0.25; // vitesse
+		this.#lfo.frequency.value = 1.25; // vitesse
 
 		this.#lfoGain.gain.value = 0.003; // profondeur (~3ms)
 
@@ -149,10 +150,8 @@ export default class AngineSpeaker {
 
 		const rawAudio = meSpeak.speak(text, {
 			rawdata: "arraybuffer",
-			voice: "ca",
 			speed: 70,
-			pitch: 10,
-			variant: "ca"
+			pitch: 25,
 		});
 
 		if (!rawAudio) {
