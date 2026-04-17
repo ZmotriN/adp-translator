@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "chokibasic": "^1.1.10",
+    "mespeak": "^2.0.2"
+  },
+  "scripts": {
+    "export": "node ./scripts/export.js"
+  }
+}

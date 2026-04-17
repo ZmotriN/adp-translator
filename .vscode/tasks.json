@@ -1,0 +1,22 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build:watch",
+			"type": "shell",
+			"command": "node ./scripts/watch.js",
+			"isBackground": true,
+			"runOptions": {
+				"runOn": "folderOpen",
+				"instanceLimit": 1
+			},
+			"presentation": {
+				"panel": "shared",
+				"group": "build-watch",
+				"reveal": "always",
+				"showReuseMessage": false
+			},
+			"problemMatcher": []
+		}
+	]
+}

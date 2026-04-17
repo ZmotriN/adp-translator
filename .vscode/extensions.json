@@ -1,0 +1,9 @@
+{
+	"recommendations": [
+		"ritwickdey.LiveServer"
+	],
+	"unwantedRecommendations": [
+		"glenn2223.live-sass",
+		"josee9988.minifyall"
+	]
+}

@@ -1,0 +1,25 @@
+{
+    "terminal.integrated.enablePersistentSessions": true,
+    "terminal.integrated.env.windows": {
+        "PATH": "${workspaceFolder}\\node_modules\\.bin;${env:PATH};${workspaceFolder}"
+    },
+    "terminal.integrated.env.osx": {
+        "PATH": "${workspaceFolder}/node_modules/.bin:${env:PATH}:${workspaceFolder}"
+    },
+    "liveServer.settings.port": 5509,
+    "liveServer.settings.CustomBrowser": "chrome",
+    "liveServer.settings.root": "./src/",
+    "liveServer.settings.ignoreFiles": [
+        ".vscode/**",
+        ".github/**",
+        "**/_**",
+        "**/.git/**",
+        "**/.vendor/**",
+        "**/node_modules/**",
+        "**/*.scss",
+        "**/*.sass",
+        "**/*.php",
+        "**/*.ts",
+        "**/!(*.min).js"
+    ]
+}

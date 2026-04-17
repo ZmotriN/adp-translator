@@ -1,0 +1,3 @@
+    Généré: ###DATE###
+    Auteur: Maxime Larrivée-Roy <mlarriveeroy@gmail.com>
+    Github: https://github.com/ZmotriN/adp-visualiser

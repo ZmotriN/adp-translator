@@ -1,0 +1,9 @@
+/node_modules/
+/package-lock.json
+/src/bt1oh97j7X.bin
+/src/service/bt1oh97j7X.bin
+Thumbs.db
+/src/quebec.svg
+/dist/service/
+/scripts/deploy-service-i.json
+/scripts/deploy-service-p.json
