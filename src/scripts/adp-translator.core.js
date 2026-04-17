@@ -47,9 +47,8 @@ import Smoother from "./libraries/smoother";
 		this.output = document.querySelector(".input > :nth-child(2)");
 		this.listen = document.querySelector(".input > :nth-child(3)");
 		this.input.addEventListener("input", e => this.inputChanged(e.target.value.trim()));
-		this.listen.addEventListener("click", async () => {
-			await this.speaker.speak(this.output.value);
-		});
+		this.listen.addEventListener("click", async () => { await this.speaker.speak(this.output.value); });
+		this.input.focus();
 	},
 
 

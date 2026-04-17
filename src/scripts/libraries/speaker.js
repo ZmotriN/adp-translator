@@ -150,8 +150,8 @@ export default class AngineSpeaker {
 		const rawAudio = meSpeak.speak(text, {
 			rawdata: "arraybuffer",
 			voice: "ca",
-			speed: 80,
-			pitch: 30,
+			speed: 70,
+			pitch: 10,
 			variant: "ca"
 		});
 

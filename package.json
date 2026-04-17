@@ -5,6 +5,7 @@
     "mespeak": "^2.0.2"
   },
   "scripts": {
-    "export": "node ./scripts/export.js"
+    "export": "node ./scripts/export.js",
+    "build": "node ./scripts/build.js"
   }
 }
