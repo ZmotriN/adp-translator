@@ -28,6 +28,29 @@ export default class AngineTranslator {
 	// -------------------------
 	#lexicon = new Map();
 
+	// -------------------------
+	// 🔒 RESERVED WORDS
+	// Each entry: [variant(s), translation]
+	// variant(s) can be a string or an array of strings.
+	// -------------------------
+	#reservedWords = [
+		["Khn", "Khn"],
+		["Klek", "Klek"],
+		[["hotdog", "hot-dog"], "tohogd"],
+		[["motocyclette", "moto"], "mata zyklek"],
+		[["sardine", "sardines"], "sahardnieh"],
+		[["ça reniaise", "ça r'niaise"], "sarniezz"],
+		["Labrecque", "L'Aberek"],
+		["sherpa", "sherpa"],
+		["hangar", "angor"],
+		["prépuce", "perep utz"],
+		["Fabien", "Fabienk"],
+		["Sébastien", "Sébastien"],
+		["tech", "tek"],
+		["Hendrick", "N'Drek"],
+		["Angine de Poitrine", "Angine de Poitrine"],
+	];
+
 	#sanitize(input) {
 		return input.normalize("NFKC").trim();
 	}
@@ -52,6 +75,26 @@ export default class AngineTranslator {
 	generateDetailed(input = "") {
 
 		input = this.#sanitize(input);
+
+		// -------------------------
+		// 🔒 RESERVED WORDS PRE-PASS
+		// Replaces reserved words (incl. hyphenated variants) with placeholders
+		// so the tokenizer treats them as a single unit.
+		// -------------------------
+		const reservedMap = new Map();
+		let rsvdIdx = 0;
+		for (const [variants, value] of this.#reservedWords) {
+			const keys = Array.isArray(variants) ? variants : [variants];
+			for (const key of keys) {
+				// Build pattern: "hotdog" → /h-?o-?t-?d-?o-?g/gi  (matches hotdog, hot-dog, h-o-t-d-o-g …)
+				const pattern = new RegExp(key.split("").join("-?"), "gi");
+				input = input.replace(pattern, () => {
+					const placeholder = `rsvd${rsvdIdx++}`;
+					reservedMap.set(placeholder, value);
+					return placeholder;
+				});
+			}
+		}
 
 		const seed = this.#simpleHash(input);
 		const rand = this.#mulberry32(seed);
@@ -204,6 +247,11 @@ export default class AngineTranslator {
 			input.match(/[\p{L}\p{N}]+|[^\p{L}\p{N}\s]+/gu) || [];
 
 		const output = tokens.map(token => {
+
+			// 🔒 reserved word placeholder → return fixed translation as-is
+			if (reservedMap.has(token.toLowerCase())) {
+				return reservedMap.get(token.toLowerCase());
+			}
 
 			if (/^[\p{L}\p{N}]+$/u.test(token)) {
 				return makeWord(token);
