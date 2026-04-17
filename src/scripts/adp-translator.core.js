@@ -53,9 +53,7 @@ import Smoother from "./libraries/smoother";
 
 
 	inputChanged: function(text) {
-		if(text) {
-			this.output.value = this.translator.generate(text);
-		}
+		this.output.value = text ? this.translator.generate(text) : "";
 	}
 
 }).init();
