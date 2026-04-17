@@ -30,8 +30,6 @@ export default class AngineTranslator {
 
 	// -------------------------
 	// 🔒 RESERVED WORDS
-	// Each entry: [variant(s), translation]
-	// variant(s) can be a string or an array of strings.
 	// -------------------------
 	#reservedWords = [
 		["Khn", "Khn"],
@@ -77,20 +75,24 @@ export default class AngineTranslator {
 		input = this.#sanitize(input);
 
 		// -------------------------
-		// 🔒 RESERVED WORDS PRE-PASS
-		// Replaces reserved words (incl. hyphenated variants) with placeholders
-		// so the tokenizer treats them as a single unit.
+		// 🔒 RESERVED WORDS PRE-PASS (FIXED)
 		// -------------------------
 		const reservedMap = new Map();
 		let rsvdIdx = 0;
+
 		for (const [variants, value] of this.#reservedWords) {
-			const keys = Array.isArray(variants) ? variants : [variants];
+
+			const keys = (Array.isArray(variants) ? variants : [variants])
+				.sort((a, b) => b.length - a.length); // 🔥 important
+
 			for (const key of keys) {
-				// Build pattern: "hotdog" → /h-?o-?t-?d-?o-?g/gi  (matches hotdog, hot-dog, h-o-t-d-o-g …)
-				const pattern = new RegExp(key.split("").join("-?"), "gi");
+
+				// support hyphen flexibility
+				const pattern = new RegExp(`\\b${key.split("").join("-?")}\\b`, "gi");
+
 				input = input.replace(pattern, () => {
 					const placeholder = `rsvd${rsvdIdx++}`;
-					reservedMap.set(placeholder, value);
+					reservedMap.set(placeholder.toLowerCase(), value);
 					return placeholder;
 				});
 			}
@@ -104,60 +106,47 @@ export default class AngineTranslator {
 		// 🔊 VOCABULARY CORE
 		// -------------------------
 		const syllables = [
-			"qa", "qe", "qi", "qo", "qu",
-			"Qa", "Qe", "Qi", "Qo", "Qu",
-
-			"ka", "ke", "ki", "ko", "ku",
-			"ga", "ge", "gi", "go", "gu",
-
-			"ta", "te", "ti", "to", "tu",
-			"da", "de", "di", "do", "du",
-
-			"pa", "pe", "pi", "po", "pu",
-			"ba", "be", "bi", "bo", "bu",
-
-			"kra", "kro", "kru", "kri",
-			"qra", "qro", "qru", "qri",
-
-			"tra", "tro", "tru", "tri",
-			"dra", "dro", "dru", "dri",
-
-			"pra", "pro", "pru", "pri",
-			"bra", "bro", "bru", "bri",
-
-			"kla", "klo", "klu",
-			"gla", "glo", "glu",
-
-			"ska", "sko", "sku",
-			"zra", "zro", "zru",
-
-			"qla", "qlo", "qlu",
-			"tqa", "tqo", "tqu",
-
-			"ak", "ek", "ik", "ok", "uk",
-			"aq", "eq", "iq", "oq", "uq"
+			"qa","qe","qi","qo","qu",
+			"Qa","Qe","Qi","Qo","Qu",
+			"ka","ke","ki","ko","ku",
+			"ga","ge","gi","go","gu",
+			"ta","te","ti","to","tu",
+			"da","de","di","do","du",
+			"pa","pe","pi","po","pu",
+			"ba","be","bi","bo","bu",
+			"kra","kro","kru","kri",
+			"qra","qro","qru","qri",
+			"tra","tro","tru","tri",
+			"dra","dro","dru","dri",
+			"pra","pro","pru","pri",
+			"bra","bro","bru","bri",
+			"kla","klo","klu",
+			"gla","glo","glu",
+			"ska","sko","sku",
+			"zra","zro","zru",
+			"qla","qlo","qlu",
+			"tqa","tqo","tqu",
+			"ak","ek","ik","ok","uk",
+			"aq","eq","iq","oq","uq"
 		];
 
 		const rolls = [
-			"brrr", "prrr", "krrr", "trrr", "grrr", "qrrr",
-			"zzzz", "ssss", "rrrr",
-			"krkr", "trtr", "prpr", "qrqr",
-			"bzbz", "zgzg",
-			"rrak", "rruk", "rrik"
+			"brrr","prrr","krrr","trrr","grrr","qrrr",
+			"zzzz","ssss","rrrr",
+			"krkr","trtr","prpr","qrqr",
+			"bzbz","zgzg",
+			"rrak","rruk","rrik"
 		];
 
 		const stops = [
-			"kt", "tk", "pt", "kp", "pk",
-			"qk", "kq", "tq", "qt",
-
-			"k", "t", "p", "q",
-			"kk", "tt", "pp", "qq",
-
-			"rk", "rt", "rp",
-			"sk", "st", "sp",
-
-			"q'", "k'", "t'",
-			"'", "''"
+			"kt","tk","pt","kp","pk",
+			"qk","kq","tq","qt",
+			"k","t","p","q",
+			"kk","tt","pp","qq",
+			"rk","rt","rp",
+			"sk","st","sp",
+			"q'","k'","t'",
+			"'","''"
 		];
 
 		// -------------------------
@@ -178,16 +167,13 @@ export default class AngineTranslator {
 		};
 
 		// -------------------------
-		// 🧠 WORD ENGINE (PHONETIC STABLE)
+		// 🧠 WORD ENGINE
 		// -------------------------
 		const makeWord = (word) => {
 
 			const clean = word.toLowerCase();
-
-			// 🧠 double metaphone (browser-safe lib)
 			const phon = (doubleMetaphone(clean)[0] || clean).toLowerCase();
 
-			// 🔒 stable lexicon
 			if (this.#lexicon.has(phon)) {
 				return this.#lexicon.get(phon);
 			}
@@ -199,7 +185,6 @@ export default class AngineTranslator {
 			const pickLocal = (arr) =>
 				arr[Math.floor(r2() * arr.length)];
 
-			// 📏 structure stable
 			const len = Math.max(1, Math.min(3, Math.ceil(clean.length / 3)));
 
 			let parts = [];
@@ -226,7 +211,6 @@ export default class AngineTranslator {
 				}
 			}
 
-			// 🔁 natural repetition effect
 			if (r2() < 0.15) {
 				const last = parts[parts.length - 1];
 				parts.push(last);
@@ -234,7 +218,6 @@ export default class AngineTranslator {
 			}
 
 			const result = parts.join("");
-
 			this.#lexicon.set(phon, result);
 
 			return result;
@@ -248,16 +231,17 @@ export default class AngineTranslator {
 
 		const output = tokens.map(token => {
 
-			// 🔒 reserved word placeholder → return fixed translation as-is
-			if (reservedMap.has(token.toLowerCase())) {
-				return reservedMap.get(token.toLowerCase());
+			const lower = token.toLowerCase();
+
+			// 🔒 restore reserved
+			if (reservedMap.has(lower)) {
+				return reservedMap.get(lower);
 			}
 
 			if (/^[\p{L}\p{N}]+$/u.test(token)) {
 				return makeWord(token);
 			}
 
-			// punctuation timing
 			if (token === ",") t += 0.15;
 			else if (token === ".") t += 0.3;
 			else if (token === "?") t += 0.35;
